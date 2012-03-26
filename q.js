@@ -22,65 +22,65 @@ var Q = Q || function(_opt){
     var actionMap = {};
     var tick = 10000; // 10s tick by default
     if(opt.tick){
-	if(opt.tick < 1) tick = 1000;
-	else tick = opt.tick * 1000;
+        if(opt.tick < 1) tick = 1000;
+        else tick = opt.tick * 1000;
     }
     var Q = {};
 
     function drain(){
-	var current = (new Date()).getTime();
-	var actionQueue = [];
-	for(var i in actionMap){
-	    for(var j in actionMap[i]){
-		if(actionMap[i][j].runAt <= current){
-		    actionQueue.push(actionMap[i][j]);
-		    unset(i,j);
-		}
-	    }
-	}
-	while(actionQueue.length > 0){
-	    var evt = actionQueue.pop();
-	    if(evt.repeat){
-		set(evt.objectName, evt.methodName, evt.apply, evt.timeout, evt.repeat);
-	    }
-	    evt.apply();
-	}
-	setTimeout(drain, tick);
+        var current = (new Date()).getTime();
+        var actionQueue = [];
+        for(var i in actionMap){
+            for(var j in actionMap[i]){
+                if(actionMap[i][j].runAt <= current){
+                    actionQueue.push(actionMap[i][j]);
+                    unset(i,j);
+                }
+            }
+        }
+        while(actionQueue.length > 0){
+            var evt = actionQueue.pop();
+            if(evt.repeat){
+                set(evt.objectName, evt.methodName, evt.apply, evt.timeout, evt.repeat);
+            }
+            evt.apply();
+        }
+        setTimeout(drain, tick);
     }
 
     function unset(objectName, methodName){
-	actionMap[objectName][methodName] = null;
-	if(actionMap[objectName].length == 0){
-	    actionMap[objectName] = null;
-	}
+        actionMap[objectName][methodName] = null;
+        if(actionMap[objectName].length == 0){
+            actionMap[objectName] = null;
+        }
     }
     
     function set(objectName, methodName, fn, timeout, shouldRepeat){
-	if(!actionMap[objectName]){
-	    actionMap[objectName] = {};
-	}
-	actionMap[objectName][methodName] = {
-	    objectName: objectName,
-	    methodName: methodName,
-	    timeout: timeout,
-	    runAt: timeout * 1000  + (new Date()).getTime(),
-	    apply: fn,
-	    repeat: shouldRepeat
-	};
+        if(!actionMap[objectName]){
+            actionMap[objectName] = {};
+        }
+        actionMap[objectName][methodName] = {
+            objectName: objectName,
+            methodName: methodName,
+            timeout: timeout,
+            runAt: timeout * 1000  + (new Date()).getTime(),
+            apply: fn,
+            repeat: shouldRepeat
+        };
     }
 
     function require(context, args){
-	var missing = [];
-	for(var i in args){
-	    if(!context[i]) missing.push(i);
-	}
-	var err = 'QError: Missing argument(s):';
-	for(var i in missing){
-	    err += i + ' ';
-	}
-	if(missing.length > 0){
-	    throw err;
-	}
+        var missing = [];
+        for(var i in args){
+            if(!context[i]) missing.push(i);
+        }
+        var err = 'QError: Missing argument(s):';
+        for(var i in missing){
+            err += i + ' ';
+        }
+        if(missing.length > 0){
+            throw err;
+        }
     } 
 
     // Public methods
@@ -99,11 +99,11 @@ var Q = Q || function(_opt){
      * triggered indefinitely.
      */
     Q.enqueue = function(opts){
-	require(opts, ['name', 
-		       'action', 
-		       'timeout']);
-	var ns = opts.name.split(_delim);
-	set(ns[0], ns[1] || 'self', opts.action, opts.timeout, !!opts.repeat);
+        require(opts, ['name', 
+                       'action', 
+                       'timeout']);
+        var ns = opts.name.split(_delim);
+        set(ns[0], ns[1] || 'self', opts.action, opts.timeout, !!opts.repeat);
     };
     /**
      * Q.dequeue - Remove a function from the set of actions to be triggered.
@@ -111,16 +111,16 @@ var Q = Q || function(_opt){
      * @param name The namespace of the function to be removed.
      */
     Q.dequeue = function(opts){
-	requre(opts, ['name']);
-	var ns = opts.name.split(_delim);
-	unset(ns[0], ns[1] || 'self');
+        requre(opts, ['name']);
+        var ns = opts.name.split(_delim);
+        unset(ns[0], ns[1] || 'self');
     };
   
     /**
      * Q.clear - Clear the entire queue
      */
     Q.clear = function(){
-	actionMap = {};
+        actionMap = {};
     };
 
     return drain() && Q;

@@ -1,0 +1,40 @@
+Q.js - An small Javascript action queing system.
+
+Q.js allows you to queue namespaced actions and attach
+a countdown value. When the countdown value reaches zero
+the code attached to the action will be executed unless 
+another action has occured within the same namespace.
+
+Optionally you can supplie the tick value which represents the
+granularity of the clock, as well as a delimiter for controlling more
+complex namespaces.
+
+Example Usage:
+
+var queue = new Q();
+
+/*
+ * Add an action that will execute after 30 seconds.
+ */	
+queue.enqueue({
+    name: 'Foo:bar', //method bar for module Foo
+    timeout: 30,     // Wait 30s before executing
+    action: function(){
+	console.log('Hello, from the future!');
+    }		    
+});
+
+//remove all methods related to Foo
+queue.dequeue({name: 'Foo'}); 
+
+/*
+ * Annoyingly, fire an alert every minute
+ */
+queue.enqueue({
+    name: 'Annoying',
+    timeout: 60,
+    repeat: true,
+    action: function(){
+	alert('ack, dequeue me');
+    }
+});

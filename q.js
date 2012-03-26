@@ -1,12 +1,18 @@
 /**
- * Q.js - An small action queing system.
  * 
- * Q.js allows you to queue namespaced actions and attach
+ * Q.js - An small Javascript action queuing system.
+ * 
+ * Q.js allows you to queue name-spaced actions and attach
  * a countdown value. When the countdown value reaches zero
  * the code attached to the action will be executed unless 
- * another action has occured within the same namespace.
- * Both ticks and timout values should be expressed in seconds;
+ * another action has occurred within the same name space.
+ * 
+ * Optionally you can supply the tick value which represents the
+ * granularity of the clock, as well as a delimiter for controlling more
+ * complex name spaces.
  *
+ * Author: Morgan Todd <tx@lowtech-labs.org>
+ * Version 0.1
  *     
  */
 
@@ -20,10 +26,7 @@ var Q = Q || function(_opt){
 	else tick = opt.tick * 1000;
     }
     var Q = {};
-   
-    /**
-     * 
-     */
+
     function drain(){
 	var current = (new Date()).getTime();
 	var actionQueue = [];
@@ -42,6 +45,7 @@ var Q = Q || function(_opt){
 	    }
 	    evt.apply();
 	}
+	setTimeout(drain, tick);
     }
 
     function unset(objectName, methodName){
@@ -111,8 +115,14 @@ var Q = Q || function(_opt){
 	var ns = opts.name.split(_delim);
 	unset(ns[0], ns[1] || 'self');
     };
-    
-    
-    return Q;
+  
+    /**
+     * Q.clear - Clear the entire queue
+     */
+    Q.clear = function(){
+	actionMap = {};
+    };
+
+    return drain() && Q;
     
 };

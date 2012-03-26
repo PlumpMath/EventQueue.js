@@ -1,13 +1,13 @@
-Q.js - An small Javascript action queing system.
+Q.js - An small Javascript action queuing system.
 
-Q.js allows you to queue namespaced actions and attach
+Q.js allows you to queue name-spaced actions and attach
 a countdown value. When the countdown value reaches zero
 the code attached to the action will be executed unless 
-another action has occured within the same namespace.
+another action has occurred within the same name space.
 
-Optionally you can supplie the tick value which represents the
+Optionally you can supply the tick value which represents the
 granularity of the clock, as well as a delimiter for controlling more
-complex namespaces.
+complex name spaces.
 
 Example Usage:
 

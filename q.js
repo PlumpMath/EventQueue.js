@@ -25,7 +25,7 @@ var Q = Q || function(_opt){
         else interval = opt.interval * 1000;
     }
     Q.actionMap = Q.actionMap || {};
-
+    
     function drain(){
         var current = (new Date()).getTime();
         var actionQueue = [];
@@ -42,28 +42,28 @@ var Q = Q || function(_opt){
             if(evt.repeat){
                 set(evt.objectName, evt.methodName, evt.apply, evt.timeout, evt.repeat);
             }
-	    if(evt.context){
-		evt.apply.call(evt.context);
-	    } else {
-		evt.apply();
-	    }
+            if(evt.context){
+                evt.apply.call(evt.context);
+            } else {
+                evt.apply();
+            }
         }
         setTimeout(drain, interval);
     }
-
+    
     function unset(objectName, methodName){
-	if(Q.actionMap[objectName]){
+        if(Q.actionMap[objectName]){
             Q.actionMap[objectName][methodName] = undefined;
-	    delete Q.actionMap[objectName][methodName];
-	    var isEmpty = true;
-	    for(var i in Q.actionMap[objectName]){
-		isEmpty = isEmpty && !Q.actionMap[objectName][i];
-	    }
-            if(isEmpty){
-		Q.actionMap[objectName] = undefined;
-		delete Q.actionMap[objectName];
+            delete Q.actionMap[objectName][methodName];
+            var isEmpty = true;
+            for(var i in Q.actionMap[objectName]){
+                isEmpty = isEmpty && !Q.actionMap[objectName][i];
             }
-	}
+            if(isEmpty){
+                Q.actionMap[objectName] = undefined;
+                delete Q.actionMap[objectName];
+            }
+        }
     }
     
     function set(objectName, methodName, fn, timeout, shouldRepeat, context){
@@ -77,10 +77,10 @@ var Q = Q || function(_opt){
             runAt: timeout * 1000  + (new Date()).getTime(),
             apply: fn,
             repeat: shouldRepeat,
-	    context: context
+            context: context
         };
     }
-
+    
     function require(context, args){
         var missing = [];
         for(var i in args){
@@ -97,7 +97,7 @@ var Q = Q || function(_opt){
     this.print  = function(){return Q.actionMap;}
     // Public methods
     this.delimiter = function(){ return _delim;};
-
+    
     /**
      * Q.enqueue - Add a function to the set of actions to be triggered.
      * If an item already exists with the given name, it will be replaced 
@@ -116,7 +116,7 @@ var Q = Q || function(_opt){
                        'timeout']);
         var ns = opts.name.split(_delim);
         set(ns[0], ns[1] || 'self', opts.action, opts.timeout, !!opts.repeat, context);
-	return this;
+        return this;
     };
     /**
      * Q.dequeue - Remove a function from the set of actions to be triggered.
@@ -127,15 +127,15 @@ var Q = Q || function(_opt){
         require(opts, ['name']);
         var ns = opts.name.split(_delim);
         unset(ns[0], ns[1] || 'self');
-	return this;
+        return this;
     };
-  
+    
     /**
      * Q.clear - Clear the entire queue
      */
     this.clear = function(){
         Q.actionMap = {};
-	return this;
+        return this;
     };
     drain();
     return this;

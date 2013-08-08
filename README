@@ -1,4 +1,4 @@
-Q.js - An small Javascript action queuing system.
+Q.js - A small Javascript action queuing system.
 
 Q.js allows you to queue name-spaced actions and attach
 a countdown value. When the countdown value reaches zero
@@ -11,14 +11,16 @@ complex name spaces.
 
 Example Usage:
 
-var queue = new Q();
+var queue = new EventQueue();
 
 /*
- * Add an action that will execute after 30 seconds.
+ * Add an action that will execute after 5 seconds.
  */	
 queue.enqueue({
     name: 'Foo:bar', //method bar for module Foo
-    timeout: 30,     // Wait 30s before executing
+    timeout: 5,     // Wait 5s before executing
+    repeat: true,    // repeat indefinitely
+    immediate: true, // start immediately
     action: function(){
 	console.log('Hello, from the future!');
     }		    
@@ -28,12 +30,13 @@ queue.enqueue({
 queue.dequeue({name: 'Foo'}); 
 
 /*
- * Annoyingly, fire an alert every minute
+ * Annoyingly, fire an alert every 10 seconds
  */
 queue.enqueue({
     name: 'Annoying',
-    timeout: 60,
+    timeout: 10,
     repeat: true,
+    immediate: true, // start immediately
     action: function(){
 	alert('ack, dequeue me');
     }

@@ -24,15 +24,15 @@ var EventQueue = EventQueue || function(_opt){
         if(opt.interval < 1) interval = 1000;
         else interval = opt.interval * 1000;
     }
-    EventQueue.actionMap = EventQueue.actionMap || {};
+    var events = {};
     
     function drain(){
         var current = (new Date()).getTime();
         var actionQueue = [];
-        for(var i in EventQueue.actionMap){
-            for(var j in EventQueue.actionMap[i]){
-                if(EventQueue.actionMap[i][j].runAt <= current){
-                    actionQueue.push(EventQueue.actionMap[i][j]);
+        for(var i in events){
+            for(var j in events[i]){
+                if(events[i][j].runAt <= current){
+                    actionQueue.push(events[i][j]);
                     unset(i,j);
                 }
             }
@@ -52,26 +52,26 @@ var EventQueue = EventQueue || function(_opt){
     }
     
     function unset(objectName, methodName){
-        if(EventQueue.actionMap[objectName]){
-            EventQueue.actionMap[objectName][methodName] = undefined;
-            delete EventQueue.actionMap[objectName][methodName];
+        if(events[objectName]){
+            events[objectName][methodName] = undefined;
+            delete events[objectName][methodName];
             var isEmpty = true;
-            for(var i in EventQueue.actionMap[objectName]){
-                isEmpty = isEmpty && !EventQueue.actionMap[objectName][i];
+            for(var i in events[objectName]){
+                isEmpty = isEmpty && !events[objectName][i];
             }
             if(isEmpty || methodName == 'self'){
-                EventQueue.actionMap[objectName] = undefined;
-                delete EventQueue.actionMap[objectName];
+                events[objectName] = undefined;
+                delete events[objectName];
             }
         }
     }
     
     function set(objectName, methodName, fn, timeout, shouldRepeat, isImmediate, context){
-        if(!EventQueue.actionMap[objectName]){
-            EventQueue.actionMap[objectName] = {};
+        if(!events[objectName]){
+            events[objectName] = {};
         }
 	var now = (new Date()).getTime()
-        EventQueue.actionMap[objectName][methodName] = {
+        events[objectName][methodName] = {
             objectName: objectName,
             methodName: methodName,
             timeout: timeout,
@@ -95,7 +95,7 @@ var EventQueue = EventQueue || function(_opt){
             throw err;
         }
     } 
-    this.print  = function(){return EventQueue.actionMap;}
+    this.print  = function(){return events;}
     // Public methods
     this.delimiter = function(){ return _delim;};
     
@@ -137,7 +137,7 @@ var EventQueue = EventQueue || function(_opt){
      * EventQueue.clear - Clear the entire queue
      */
     this.clear = function(){
-        EventQueue.actionMap = {};
+        events = {};
         return this;
     };
     drain();

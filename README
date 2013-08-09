@@ -1,6 +1,6 @@
-Q.js - A small Javascript action queuing system.
+EventQueue.js - A small Javascript action queuing system.
 
-Q.js allows you to queue name-spaced actions and attach
+EventQueue.js allows you to queue name-spaced actions and attach
 a countdown value. When the countdown value reaches zero
 the code attached to the action will be executed unless 
 another action has occurred within the same name space.

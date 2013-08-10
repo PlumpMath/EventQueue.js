@@ -14,7 +14,7 @@ Example Usage:
 var queue = new EventQueue();
 
 /*
- * Add an action that will execute after 5 seconds.
+ * Add an action that will execute every 5 seconds.
  */	
 queue.enqueue({
     name: 'Foo:bar', //method bar for module Foo
@@ -41,6 +41,39 @@ queue.enqueue({
 	alert('ack, dequeue me');
     }
 });
+
+// This is an, admittedly, contrived example on how the optional 
+// context argument is useful.
+
+
+var Context = function(){
+    var now = (new Date()).getTime();
+
+    var print = function(){
+	console.log("I started at " + now + " it is now " + (new Date()).getTime());
+    }
+
+    this.printMessage = print;
+
+    this.doContextTest = function(){
+	queue.enqueue({
+	    name: 'Context',
+	    timeout: 1,
+	    repeat: true,
+	    action: function(){
+		this.printMessage();
+	    }
+	}, this);
+    }
+}
+
+var ctx = new Context();
+
+...
+
+<input type="button" value="Run context test" onclick="return ctx.doContextTest();" />
+
+
 
 Copyright (c) 2013, Morgan Todd
 All rights reserved.

@@ -61,7 +61,7 @@ var EventQueue = EventQueue || function(_opt){
         while(actionQueue.length > 0){
             var evt = actionQueue.pop();
             if(evt.repeat){
-                set(evt.objectName, evt.methodName, evt.apply, evt.timeout, evt.repeat);
+                set(evt.objectName, evt.methodName, evt.apply, evt.timeout, evt.repeat, evt.immediate, evt.context);
             }
             if(evt.context){
                 evt.apply.call(evt.context);

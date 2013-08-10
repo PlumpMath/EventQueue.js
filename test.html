@@ -43,12 +43,39 @@ function doAnnoyingTest(){
 function killAnnoyingTest(){
     queue.dequeue({name: 'Annoying'});
 }
+
+var Context = function(){
+    var now = (new Date()).getTime();
+
+    var print = function(){
+	console.log("I started at " + now + " it is now " + (new Date()).getTime());
+    }
+
+    this.printMessage = print;
+
+    this.doContextTest = function(){
+	queue.enqueue({
+	    name: 'Context',
+	    timeout: 1,
+	    repeat: true,
+	    action: function(){
+		this.printMessage();
+	    }
+	}, this);
+    }
+}
+
+function killContextTest(){
+    queue.dequeue({name: 'Context'});
+}
+
+var ctx = new Context();
 </script>
 </head>
 <body>
 <h1>EventQueue Test Page</h1>
 <pre id="out"></pre>
-<h2>Add an action that will execute after 30 seconds.</h2>
+<h2>Add an action that will execute every 5 seconds.</h2>
 <input type="button" value="Run 5 second test" onclick="return do5SecondTest();" />
 <pre>
 queue.enqueue({
@@ -81,7 +108,42 @@ queue.enqueue({
     }
 });
 </pre>
+<h2>Execution Context</h2>
+<div>This is an, admittedly, contrived example on how the optional
+  context argument is useful.</div>
+<input type="button" value="Run context test" onclick="return ctx.doContextTest();" />
+<input type="button" value="Kill context test" onclick="return killContextTest();" /><pre>
+
+
+var Context = function(){
+    var now = (new Date()).getTime();
+
+    var print = function(){
+	console.log("I started at " + now + " it is now " + (new Date()).getTime());
+    }
+
+    this.printMessage = print;
+
+    this.doContextTest = function(){
+	queue.enqueue({
+	    name: 'Context',
+	    timeout: 1,
+	    repeat: true,
+	    action: function(){
+		this.printMessage();
+	    }
+	}, this);
+    }
+}
+
+var ctx = new Context();
+
+...
+
+&lt;input type="button" value="Run context test" onclick="return ctx.doContextTest();" /&gt;
+
+</pre>
 <hr>
-<!-- hhmts start -->Last modified: Thu Aug  8 02:28:32 PDT 2013 <!-- hhmts end -->
+<!-- hhmts start -->Last modified: Fri Aug  9 17:24:38 PDT 2013 <!-- hhmts end -->
 </body>
 </html>
